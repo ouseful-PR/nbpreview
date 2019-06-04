@@ -5,6 +5,12 @@
 
     var render_notebook = function (ipynb) {
         var notebook = root.notebook = nb.parse(ipynb);
+
+        //set ipynb to be the nb.Notebook object representation of the notebook
+        window.ipynb = notebook
+        window.rawIpynb = window.ipynb.raw
+
+
         while ($holder.hasChildNodes()) {
             $holder.removeChild($holder.lastChild);
         }

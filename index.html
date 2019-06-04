@@ -10,13 +10,92 @@
         <script type="text/javascript" src="js/vendor/prism.min.js"></script>
         <script type="text/javascript" src="js/vendor/katex.min.js"></script>
         <script type="text/javascript" src="js/vendor/katex-auto-render.min.js"></script>
-        <script type="text/javascript" src="js/vendor/notebook.min.js"></script>
+        <script type="text/javascript" src="js/notebook.js"></script>
+       <!-- <script type="text/javascript" src="js/vendor/notebook.min.js"></script> -->
         <link rel="stylesheet" href="css/vendor/katex.min.css" />
         <link rel="stylesheet" href="css/vendor/prism.css" />
         <link rel="stylesheet" href="css/vendor/notebook.css" />
         <link rel="stylesheet" href="css/nbpreview.css" />
+        <!--
+
+                   /* {
+              bootstrap: true,
+              kernelOptions: {
+                name: "python3",
+                serverSettings: {
+                  "baseUrl": "http://127.0.0.1:8888",
+                  "token": "letmein"
+                }
+              },
+            }
+            */
+
+  
+        -->
+        <script type="text/x-thebe-config">
+          {
+            requestKernel: true,
+            binderOptions: {
+              repo: "binder-examples/requirements",
+            },
+          }
+        </script>
+
+        <script type="text/javascript">
+        //https://stackoverflow.com/a/34156339/454773
+        function download(content, fileName, contentType) {
+          var a = document.createElement("a");
+          var file = new Blob([content], {type: contentType});
+          a.href = URL.createObjectURL(file);
+          a.download = fileName;
+          a.click();
+          }
+        //download(jsonData, 'json.txt', 'text/plain');
+      </script>
+
+          <script type="text/javascript" src="https://unpkg.com/thebelab@^0.4.0" ></script>
     </head>
     <body>
+            <div>        <button id="activateButton"  style="width: 150px; height: 75px; font-size: 1.5em;">Activate</button>
+                <script>
+                var bootstrapThebe = function() {
+                    thebelab.bootstrap();
+                }
+                
+                document.querySelector("#activateButton").addEventListener('click', bootstrapThebe)
+                </script></div>
+
+                <div><button id="downloadButton"  style="width: 150px; height: 75px; font-size: 1.5em;">Download</button>
+                <script>
+                //run the download function; need to figure out how to pass in the JSON; then need to figure out how to update the json
+                var downloadIpynb = function(){
+                  //rawIpynb is the original raw json string
+                  //download(JSON.stringify(ipynb.raw), 'originalJson.txt', 'text/plain');
+                  //Can we also serialise the derived object?
+                  //how about we just try to dsiplay code cells?
+                  
+                  //THIS WORKS FOR THE ORIGINAL CEEL PRE-THEBELAB ENABLEMENT
+                  original_answers = document.querySelectorAll('[data-executable="true"]');
+
+                  //Get a set of lines in element
+                  answerset = document.querySelectorAll('[class="CodeMirror-code"]');
+                  var txt = ''
+                  var s = new XMLSerializer();
+                  for (i = 0; i < answerset.length; ++i) {
+                    answers = answerset[i].querySelectorAll('span[role="presentation"]');
+                    for (j = 0; j < answers.length; ++j){
+                      //txt = txt + '\n\n' + s.serializeToString(answers[j])
+                      txt = txt + '\n\n' + answers[j].textContent;
+
+                    }
+                    txt = txt + '\n\n\n\n' 
+                  }
+                  //var str = s.serializeToString(answers[0]);
+                  download(txt, 'answersCode.txt', 'text/plain');
+                }
+                document.querySelector("#downloadButton").addEventListener('click', downloadIpynb)
+                </script>
+                </div>
         <div id="main">
             <div id="controls">
                 <div id="header">IPython/Jupyter Notebook Previewer</div>
@@ -27,6 +106,9 @@
                 <a href="https://github.com/jsvine/nbpreview">See the <code>nbpreview</code> code on GitHub</a>.
             </div>
         </div>
+
+
+
         <script src="js/nbpreview.js"></script>
     </body>
 </html>
